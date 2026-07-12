@@ -31,7 +31,7 @@ jobs:
 
       - name: Setup dependencies
         run: |
-          git submodule update --init --remote --recursive
+          git submodule update --init external/language
           flutter pub get
 
       - run: flutter build apk --debug --build-number=${{ github.run_number }}
