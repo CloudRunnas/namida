@@ -28,7 +28,10 @@
   "commandOnAllFiles.commands": {
     "Sort All Imports": {
       "command": "dartimportsorter.sortImports",
-      "includeFileExtensions": [".dart"]
+      "includeFileExtensions": [
+        ".dart"
+      ]
     }
-  }
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.44.1"
 }

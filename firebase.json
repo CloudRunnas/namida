@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"ml-ciops","appId":"1:271519645394:android:3243647fc4c23feb4d370b","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"ml-ciops","configurations":{"android":"1:271519645394:android:3243647fc4c23feb4d370b","ios":"1:271519645394:ios:501601e4ad66d9aa4d370b"}}}}}}

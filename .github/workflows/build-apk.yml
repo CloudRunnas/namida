@@ -1,0 +1,70 @@
+name: Build APK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.44.1"
+          cache: true
+
+      - name: Setup Git credentials
+        run: |
+          git config --global url.https://${{ secrets.PAT_ORG }}@github.com/namidaco/.insteadOf https://github.com/namidaco/
+          git config --global url.https://${{ secrets.PAT }}@github.com/MSOB7YY/.insteadOf https://github.com/MSOB7YY/
+
+      - name: Setup dependencies
+        run: |
+          git submodule update --init --remote --recursive
+          flutter pub get
+
+      - name: Create keystore & key.properties
+        run: |
+          echo ${{ secrets.ANDROID_SIGNING_KEYSTORE }} | base64 --decode > android/app/keystore.jks
+          echo ${{ secrets.ANDROID_SIGNING_KEY_PROPERTIES }} | base64 --decode > android/key.properties
+
+      - run: flutter build apk --release --build-number=${{ github.run_number }}
+
+      - name: Locate release APK
+        id: apk
+        run: |
+          if [ -f build/app/outputs/flutter-apk/app-release.apk ]; then
+            echo "path=build/app/outputs/flutter-apk/app-release.apk" >> "$GITHUB_OUTPUT"
+          else
+            APK=$(find build/app/outputs/flutter-apk -maxdepth 1 -name '*.apk' ! -name '*armeabi*' ! -name '*x86*' | head -1)
+            echo "path=$APK" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: ${{ steps.apk.outputs.path }}
+
+      - name: Deploy to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: 1:271519645394:android:3243647fc4c23feb4d370b
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          groups: MikesAppTester
+          file: ${{ steps.apk.outputs.path }}
+          releaseNotes: |
+            Build #${{ github.run_number }} (${{ github.sha }})
+            Branch: ${{ github.ref_name }}
+            ${{ github.event.head_commit.message }}

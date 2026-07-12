@@ -60,8 +60,6 @@ CHANGELOG_pretty.txt
 
 windows/flutter/generated_**
 
-
-
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
@@ -230,7 +228,6 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !.vscode/settings.json
 
-
 *.freezed.dart
 *.g.dart
 
@@ -249,3 +246,6 @@ dist/
 scripts/bundle_output*
 
 lib/core/translations/arb/*
+
+# FVM Version Cache
+.fvm/
