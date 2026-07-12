@@ -10,8 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PAT }}
-          submodules: recursive
+          submodules: false
 
       - uses: actions/setup-java@v4
         with:
@@ -27,8 +26,8 @@ jobs:
 
       - name: Setup Git credentials
         run: |
-          git config --global url.https://${{ secrets.PAT_ORG }}@github.com/namidaco/.insteadOf https://github.com/namidaco/
-          git config --global url.https://${{ secrets.PAT }}@github.com/MSOB7YY/.insteadOf https://github.com/MSOB7YY/
+          git config --global url.https://x-access-token:${{ secrets.PAT }}@github.com/namidaco/.insteadOf https://github.com/namidaco/
+          git config --global url.https://x-access-token:${{ secrets.PAT }}@github.com/MSOB7YY/.insteadOf https://github.com/MSOB7YY/
 
       - name: Setup dependencies
         run: |
